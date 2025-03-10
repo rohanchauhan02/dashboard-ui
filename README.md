@@ -1,54 +1,146 @@
-# React + TypeScript + Vite
+# Orchestrator - Visual Workflow Automation Platform
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Orchestrator is a powerful workflow automation platform with a visual designer, rule engine, and intelligent recommendations. Build, connect, and automate workflows with ease.
 
-Currently, two official plugins are available:
+<div align="center">
+  <img src="https://github.com/yourusername/orchestrator/raw/main/docs/images/screenshot.png" alt="Orchestrator Screenshot" width="800">
+</div>
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## Expanding the ESLint configuration
+- 🔄 **Visual Workflow Builder** - Drag-and-drop interface for creating complex workflows
+- 🧠 **Intelligent Recommendations** - Get suggestions based on your workflow patterns
+- ⚙️ **Rule Engine** - Define business rules that control your workflow execution
+- 🔌 **Extensive Node Library** - Connect to popular services like Slack, Email, Databases, and more
+- 📊 **Execution History** - Track and monitor workflow executions
+- 🔗 **API Integration** - Trigger workflows via webhooks and API calls
+- 📅 **Scheduling** - Run workflows on a schedule
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Quick Start
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+### Prerequisites
+
+- Node.js 20.x or later
+- NPM 9.x or later
+
+### Installation
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/yourusername/orchestrator.git
+cd orchestrator
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+2. Install dependencies:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+```bash
+npm install
 ```
+
+3. Start the application:
+
+```bash
+npm run dev
+```
+
+4. Open your browser and navigate to:
+
+```
+http://localhost:5000
+```
+
+## Architecture
+
+Orchestrator is built with a modern tech stack:
+
+- **Frontend**: React, TypeScript, Tailwind CSS, shadcn/ui
+- **Backend**: Node.js, Express
+- **Visualization**: ReactFlow
+- **Rule Engine**: json-rules-engine
+- **Scheduling**: node-cron
+
+## Project Structure
+
+```
+orchestrator/
+├── client/             # Frontend code
+│   ├── src/
+│   │   ├── components/ # React components
+│   │   ├── hooks/      # Custom React hooks
+│   │   ├── lib/        # Utility functions
+│   │   └── pages/      # Page components
+├── server/             # Backend code
+│   ├── services/       # Business logic
+│   │   ├── integrations/ # Service integrations
+│   │   ├── ruleEngine.ts # Rule engine
+│   │   └── workflowExecutor.ts # Workflow execution
+│   ├── index.ts        # Server entry point
+│   └── routes.ts       # API routes
+└── shared/             # Shared types and utilities
+    └── schema.ts       # Database schema and types
+```
+
+## Workflow Builder
+
+The workflow builder allows you to create complex automations:
+
+1. **Add Nodes** - Click the "+" button to add nodes to your workflow
+2. **Connect Nodes** - Drag from a node's output to another node's input
+3. **Configure Nodes** - Click on a node to configure its settings
+4. **Save & Run** - Save your workflow and run it
+
+## Node Types
+
+Orchestrator includes a wide variety of node types:
+
+- **Triggers**: Manual, Webhook, Schedule, Database Events
+- **Logic**: Conditions, Switches, Loops, Delay
+- **API & Data**: HTTP Requests, Database Operations, Transformations
+- **Communication**: Email, Slack, Telegram
+- **Project Tools**: GitHub, Jira, Trello
+
+## Rule Engine
+
+The rule engine allows you to define business rules that control workflow execution:
+
+1. Navigate to the "Rule Engine" tab in the workflow editor
+2. Select a node from the canvas to define rules
+3. Create conditions and actions
+4. Save your rules
+
+## Recommendations
+
+Orchestrator provides intelligent recommendations based on your workflow:
+
+1. Navigate to the "Recommendations" tab in the workflow editor
+2. Browse recommended templates and patterns
+3. Apply a recommendation to your workflow
+
+## Development
+
+### Running in Development Mode
+
+```bash
+npm run dev
+```
+
+### Building for Production
+
+```bash
+npm run build
+```
+
+### Running Tests
+
+```bash
+npm test
+```
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
