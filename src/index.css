@@ -4,16 +4,14 @@
 
 @layer base {
   * {
-    @apply border-border; /* Ensure this class is valid */
+    border-color: theme('colors.gray.200');
   }
 
-  body {
-    @apply font-sans antialiased bg-background text-foreground;
+  @media (prefers-color-scheme: dark) {
+    * {
+      border-color: theme('colors.gray.700');
+    }
   }
 }
 
-@layer utilities {
-  .border-border {
-    @apply border-gray-200 dark:border-gray-700; /* Define default border color */
-  }
-}
+

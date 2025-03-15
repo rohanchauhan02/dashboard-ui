@@ -30,7 +30,7 @@ import {
   Cloud,
   Pencil,
   Trash2,
-  Copy
+  Copy,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -113,12 +113,17 @@ const CustomEdge = ({
 const nodeTypes = {
   custom: ({ data }: { data: NodeData }) => {
     const getColorClass = (color: string) => {
-      switch(color) {
-        case 'blue': return 'bg-blue-100 text-blue-600';
-        case 'orange': return 'bg-orange-100 text-orange-600';
-        case 'purple': return 'bg-purple-100 text-purple-600';
-        case 'green': return 'bg-green-100 text-green-600';
-        default: return 'bg-gray-100 text-gray-600';
+      switch (color) {
+        case 'blue':
+          return 'bg-blue-100 text-blue-600';
+        case 'orange':
+          return 'bg-orange-100 text-orange-600';
+        case 'purple':
+          return 'bg-purple-100 text-purple-600';
+        case 'green':
+          return 'bg-green-100 text-green-600';
+        default:
+          return 'bg-gray-100 text-gray-600';
       }
     };
 
@@ -141,7 +146,12 @@ const nodeTypes = {
         />
 
         <div className="flex items-center mb-3">
-          <div className={cn("w-10 h-10 rounded-md flex items-center justify-center mr-3 shadow-sm", getColorClass(data.color))}>
+          <div
+            className={cn(
+              'w-10 h-10 rounded-md flex items-center justify-center mr-3 shadow-sm',
+              getColorClass(data.color)
+            )}
+          >
             <i className={data.icon} style={{ fontSize: '1.25rem' }}></i>
           </div>
           <div className="text-sm font-medium leading-tight overflow-hidden text-ellipsis flex-1">
@@ -183,7 +193,7 @@ const WorkflowCanvas = ({
   onNodeClick,
   onPaneClick,
   onDragOver,
-  onDrop
+  onDrop,
 }: WorkflowCanvasProps) => {
   const reactFlowInstance = useReactFlow();
   const edgeUpdateSuccessful = useRef(true);
@@ -218,117 +228,129 @@ const WorkflowCanvas = ({
   }, [reactFlowInstance]);
 
   // Function to add a node in the middle of an edge
-  const handleAddNodeBetween = useCallback((nodeType: any) => {
-    if (!selectedEdge || !edgeMenuPosition) return;
+  const handleAddNodeBetween = useCallback(
+    (nodeType: any) => {
+      if (!selectedEdge || !edgeMenuPosition) return;
 
-    // Create a new node
-    const newNodeId = `node_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
-    const newNode = {
-      id: newNodeId,
-      type: 'custom',
-      position: edgeMenuPosition,
-      data: {
-        label: nodeType.name,
-        type: nodeType.type,
-        subtype: nodeType.subtype,
-        icon: nodeType.icon,
-        color: nodeType.color,
-        config: {},
-      },
-    };
+      // Create a new node
+      const newNodeId = `node_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
+      const newNode = {
+        id: newNodeId,
+        type: 'custom',
+        position: edgeMenuPosition,
+        data: {
+          label: nodeType.name,
+          type: nodeType.type,
+          subtype: nodeType.subtype,
+          icon: nodeType.icon,
+          color: nodeType.color,
+          config: {},
+        },
+      };
 
-    // Create two new edges: source -> new node and new node -> target
-    const sourceToNewEdge = {
-      id: `edge_${Date.now()}_1`,
-      source: selectedEdge.source,
-      target: newNodeId,
-      // Copy any style properties from the original edge
-      style: selectedEdge.style,
-      markerEnd: selectedEdge.markerEnd,
-      animated: selectedEdge.animated,
-    };
+      // Create two new edges: source -> new node and new node -> target
+      const sourceToNewEdge = {
+        id: `edge_${Date.now()}_1`,
+        source: selectedEdge.source,
+        target: newNodeId,
+        // Copy any style properties from the original edge
+        style: selectedEdge.style,
+        markerEnd: selectedEdge.markerEnd,
+        animated: selectedEdge.animated,
+      };
 
-    const newToTargetEdge = {
-      id: `edge_${Date.now()}_2`,
-      source: newNodeId,
-      target: selectedEdge.target,
-      // Copy any style properties from the original edge
-      style: selectedEdge.style,
-      markerEnd: selectedEdge.markerEnd,
-      animated: selectedEdge.animated,
-    };
+      const newToTargetEdge = {
+        id: `edge_${Date.now()}_2`,
+        source: newNodeId,
+        target: selectedEdge.target,
+        // Copy any style properties from the original edge
+        style: selectedEdge.style,
+        markerEnd: selectedEdge.markerEnd,
+        animated: selectedEdge.animated,
+      };
 
-    // Add the new node and edges, remove the old edge
-    onNodesChange([{ type: 'add', item: newNode }]);
-    onEdgesChange([
-      { type: 'remove', id: selectedEdge.id },
-      { type: 'add', item: sourceToNewEdge },
-      { type: 'add', item: newToTargetEdge },
-    ]);
+      // Add the new node and edges, remove the old edge
+      onNodesChange([{ type: 'add', item: newNode }]);
+      onEdgesChange([
+        { type: 'remove', id: selectedEdge.id },
+        { type: 'add', item: sourceToNewEdge },
+        { type: 'add', item: newToTargetEdge },
+      ]);
 
-    // Clear the selection
-    setSelectedEdge(null);
-    setEdgeMenuPosition(null);
-  }, [selectedEdge, edgeMenuPosition, onNodesChange, onEdgesChange]);
+      // Clear the selection
+      setSelectedEdge(null);
+      setEdgeMenuPosition(null);
+    },
+    [selectedEdge, edgeMenuPosition, onNodesChange, onEdgesChange]
+  );
 
   const onEdgeUpdateStart = useCallback(() => {
     edgeUpdateSuccessful.current = false;
   }, []);
 
-  const onEdgeUpdate = useCallback((oldEdge: Edge, newConnection: any) => {
-    edgeUpdateSuccessful.current = true;
-    onEdgesChange([
-      {
-        id: oldEdge.id,
-        type: 'remove',
-      },
-    ]);
-    onConnect(newConnection);
-  }, [onConnect, onEdgesChange]);
-
-  const onEdgeUpdateEnd = useCallback((_: any, edge: Edge) => {
-    if (!edgeUpdateSuccessful.current) {
+  const onEdgeUpdate = useCallback(
+    (oldEdge: Edge, newConnection: any) => {
+      edgeUpdateSuccessful.current = true;
       onEdgesChange([
         {
-          id: edge.id,
+          id: oldEdge.id,
           type: 'remove',
         },
       ]);
-    }
-    edgeUpdateSuccessful.current = true;
-  }, [onEdgesChange]);
+      onConnect(newConnection);
+    },
+    [onConnect, onEdgesChange]
+  );
+
+  const onEdgeUpdateEnd = useCallback(
+    (_: any, edge: Edge) => {
+      if (!edgeUpdateSuccessful.current) {
+        onEdgesChange([
+          {
+            id: edge.id,
+            type: 'remove',
+          },
+        ]);
+      }
+      edgeUpdateSuccessful.current = true;
+    },
+    [onEdgesChange]
+  );
 
   // Function to handle node creation from the quick add menu
-  const handleAddNode = useCallback((nodeType: any) => {
-    // Get the center position of the current viewport
-    const { x, y, zoom } = reactFlowInstance.getViewport();
-    const centerX = reactFlowInstance.screenToFlowPosition({
-      x: window.innerWidth / 2,
-      y: window.innerHeight / 2,
-    }).x;
-    const centerY = reactFlowInstance.screenToFlowPosition({
-      x: window.innerWidth / 2,
-      y: window.innerHeight / 2,
-    }).y;
+  const handleAddNode = useCallback(
+    (nodeType: any) => {
+      // Get the center position of the current viewport
+      const { x, y, zoom } = reactFlowInstance.getViewport();
+      const centerX = reactFlowInstance.screenToFlowPosition({
+        x: window.innerWidth / 2,
+        y: window.innerHeight / 2,
+      }).x;
+      const centerY = reactFlowInstance.screenToFlowPosition({
+        x: window.innerWidth / 2,
+        y: window.innerHeight / 2,
+      }).y;
 
-    // Create a new node
-    const newNode = {
-      id: `node_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
-      type: 'custom',
-      position: { x: centerX, y: centerY },
-      data: {
-        label: nodeType.name,
-        type: nodeType.type,
-        subtype: nodeType.subtype,
-        icon: nodeType.icon,
-        color: nodeType.color,
-        config: {},
-      },
-    };
+      // Create a new node
+      const newNode = {
+        id: `node_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
+        type: 'custom',
+        position: { x: centerX, y: centerY },
+        data: {
+          label: nodeType.name,
+          type: nodeType.type,
+          subtype: nodeType.subtype,
+          icon: nodeType.icon,
+          color: nodeType.color,
+          config: {},
+        },
+      };
 
-    // Add node to canvas
-    onNodesChange([{ type: 'add', item: newNode }]);
-  }, [reactFlowInstance, onNodesChange]);
+      // Add node to canvas
+      onNodesChange([{ type: 'add', item: newNode }]);
+    },
+    [reactFlowInstance, onNodesChange]
+  );
 
   return (
     <div className="h-full w-full" onDragOver={onDragOver} onDrop={onDrop}>
@@ -376,6 +398,7 @@ const WorkflowCanvas = ({
               <Button
                 size="icon"
                 className="rounded-full shadow-lg h-14 w-14 bg-gradient-to-tr from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 transition-all duration-300 transform hover:scale-105 border-2 border-white/70"
+                style={{ zIndex: 1000 }} // Ensure the button is on top
               >
                 <div className="absolute inset-0 rounded-full bg-white/10 backdrop-blur-[1px]"></div>
                 <Plus className="h-6 w-6 text-white relative z-10" />
@@ -385,12 +408,12 @@ const WorkflowCanvas = ({
               {nodeCategories.map((category) => (
                 <div key={category.name} className="mb-3">
                   <div className="font-medium text-sm mb-2 px-2 text-gray-700 flex items-center">
-                    {category.name === "Triggers" && <Zap className="h-3 w-3 mr-1.5 text-blue-500" />}
-                    {category.name === "Logic" && <GitBranch className="h-3 w-3 mr-1.5 text-orange-500" />}
-                    {category.name === "API & Data" && <Database className="h-3 w-3 mr-1.5 text-green-500" />}
-                    {category.name === "Communication" && <MessageSquare className="h-3 w-3 mr-1.5 text-purple-500" />}
-                    {category.name === "Project Tools" && <Settings className="h-3 w-3 mr-1.5 text-gray-500" />}
-                    {category.name === "Cloud Services" && <Cloud className="h-3 w-3 mr-1.5 text-blue-400" />}
+                    {category.name === 'Triggers' && <Zap className="h-3 w-3 mr-1.5 text-blue-500" />}
+                    {category.name === 'Logic' && <GitBranch className="h-3 w-3 mr-1.5 text-orange-500" />}
+                    {category.name === 'API & Data' && <Database className="h-3 w-3 mr-1.5 text-green-500" />}
+                    {category.name === 'Communication' && <MessageSquare className="h-3 w-3 mr-1.5 text-purple-500" />}
+                    {category.name === 'Project Tools' && <Settings className="h-3 w-3 mr-1.5 text-gray-500" />}
+                    {category.name === 'Cloud Services' && <Cloud className="h-3 w-3 mr-1.5 text-blue-400" />}
                     {category.name}
                   </div>
                   <div className="grid grid-cols-2 gap-1 px-1">
@@ -400,18 +423,29 @@ const WorkflowCanvas = ({
                         className="flex items-center cursor-pointer px-2 py-1.5 rounded-md hover:bg-gray-100"
                         onClick={() => handleAddNode(item)}
                       >
-                        <div className={cn("w-6 h-6 rounded-md flex items-center justify-center mr-2",
-                          item.color === 'blue' ? 'bg-blue-100 text-blue-600' :
-                          item.color === 'orange' ? 'bg-orange-100 text-orange-600' :
-                          item.color === 'purple' ? 'bg-purple-100 text-purple-600' :
-                          item.color === 'green' ? 'bg-green-100 text-green-600' :
-                          item.color === 'yellow' ? 'bg-yellow-100 text-yellow-600' :
-                          item.color === 'gray' ? 'bg-gray-800 text-white' :
-                          'bg-gray-100 text-gray-600'
-                        )}>
+                        <div
+                          className={cn(
+                            'w-6 h-6 rounded-md flex items-center justify-center mr-2',
+                            item.color === 'blue'
+                              ? 'bg-blue-100 text-blue-600'
+                              : item.color === 'orange'
+                              ? 'bg-orange-100 text-orange-600'
+                              : item.color === 'purple'
+                              ? 'bg-purple-100 text-purple-600'
+                              : item.color === 'green'
+                              ? 'bg-green-100 text-green-600'
+                              : item.color === 'yellow'
+                              ? 'bg-yellow-100 text-yellow-600'
+                              : item.color === 'gray'
+                              ? 'bg-gray-800 text-white'
+                              : 'bg-gray-100 text-gray-600'
+                          )}
+                        >
                           <i className={item.icon} style={{ fontSize: '12px' }}></i>
                         </div>
-                        <span className="text-xs font-medium whitespace-nowrap overflow-hidden text-ellipsis">{item.name}</span>
+                        <span className="text-xs font-medium whitespace-nowrap overflow-hidden text-ellipsis">
+                          {item.name}
+                        </span>
                       </DropdownMenuItem>
                     ))}
                   </div>
@@ -422,63 +456,53 @@ const WorkflowCanvas = ({
         </Panel>
 
         {/* Node Context Menu for Edit/View/Delete */}
-        <Panel position="top-right" className="mr-5 mt-5">
-          <div className="flex flex-col gap-2">
-            {selectedNode && (
-              <>
-                <Button
-                  size="icon"
-                  variant="outline"
-                  className="h-9 w-9 rounded-full border-gray-200 bg-white shadow-sm"
-                  onClick={() => {
-                    // TODO: Implement node edit logic
-                    onNodeClick(selectedNode);
-                  }}
-                  title="Edit Node"
-                >
-                  <Pencil className="h-4 w-4 text-gray-600" />
-                </Button>
-                <Button
-                  size="icon"
-                  variant="outline"
-                  className="h-9 w-9 rounded-full border-gray-200 bg-white shadow-sm"
-                  onClick={() => {
-                    // Delete node function
-                    // TODO: Add confirmation dialog
-                    onNodesChange([{
-                      type: 'remove',
-                      id: selectedNode.id,
-                    }]);
-                    onPaneClick(); // Deselect after deletion
-                  }}
-                  title="Delete Node"
-                >
-                  <Trash2 className="h-4 w-4 text-red-500" />
-                </Button>
-                <Button
-                  size="icon"
-                  variant="outline"
-                  className="h-9 w-9 rounded-full border-gray-200 bg-white shadow-sm"
-                  onClick={() => {
-                    // Duplicate node function
-                    const newNode = {
-                      ...selectedNode,
-                      id: `node_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
-                      position: {
-                        x: selectedNode.position.x + 50,
-                        y: selectedNode.position.y + 50,
-                      },
-                    };
-                    onNodesChange([{ type: 'add', item: newNode }]);
-                  }}
-                  title="Duplicate Node"
-                >
-                  <Copy className="h-4 w-4 text-gray-600" />
-                </Button>
-              </>
-            )}
-          </div>
-        </Panel>
+        {selectedNode && (
+          <Panel position="top-right" className="mr-5 mt-5">
+            <div className="flex flex-col gap-2">
+              <Button
+                size="icon"
+                variant="outline"
+                className="h-9 w-9 rounded-full border-gray-200 bg-white shadow-sm"
+                onClick={() => onNodeClick(selectedNode)}
+                title="Edit Node"
+              >
+                <Pencil className="h-4 w-4 text-gray-600" />
+              </Button>
+              <Button
+                size="icon"
+                variant="outline"
+                className="h-9 w-9 rounded-full border-gray-200 bg-white shadow-sm"
+                onClick={() => {
+                  onNodesChange([{ type: 'remove', id: selectedNode.id }]);
+                  onPaneClick(); // Deselect after deletion
+                }}
+                title="Delete Node"
+              >
+                <Trash2 className="h-4 w-4 text-red-500" />
+              </Button>
+              <Button
+                size="icon"
+                variant="outline"
+                className="h-9 w-9 rounded-full border-gray-200 bg-white shadow-sm"
+                onClick={() => {
+                  const newNode = {
+                    ...selectedNode,
+                    id: `node_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
+                    position: {
+                      x: selectedNode.position.x + 50,
+                      y: selectedNode.position.y + 50,
+                    },
+                  };
+                  onNodesChange([{ type: 'add', item: newNode }]);
+                }}
+                title="Duplicate Node"
+              >
+                <Copy className="h-4 w-4 text-gray-600" />
+              </Button>
+            </div>
+          </Panel>
+        )}
+
         {/* Edge Context Menu for adding nodes in between */}
         {selectedEdge && edgeMenuPosition && (
           <div
@@ -486,39 +510,44 @@ const WorkflowCanvas = ({
             style={{
               left: edgeMenuPosition.x,
               top: edgeMenuPosition.y,
-              transform: 'translate(-50%, -50%)'
+              transform: 'translate(-50%, -50%)',
             }}
           >
-            <div className="text-sm font-medium mb-2 text-gray-700">
-              Add Node Between Connection
-            </div>
+            <div className="text-sm font-medium mb-2 text-gray-700">Add Node Between Connection</div>
             <div className="grid grid-cols-2 gap-2 mt-3">
               {nodeCategories
-                .flatMap(category => category.items)
-                .filter(item => item.type !== "Triggers") // No trigger nodes in the middle
+                .flatMap((category) => category.items)
+                .filter((item) => item.type !== 'Triggers') // No trigger nodes in the middle
                 .slice(0, 8) // Limit to 8 options for simplicity
-                .map(item => (
+                .map((item) => (
                   <div
                     key={item.name}
                     className="flex items-center cursor-pointer px-2 py-1.5 rounded-md hover:bg-gray-100"
                     onClick={() => handleAddNodeBetween(item)}
                   >
-                    <div className={cn("w-6 h-6 rounded-md flex items-center justify-center mr-2",
-                      item.color === 'blue' ? 'bg-blue-100 text-blue-600' :
-                      item.color === 'orange' ? 'bg-orange-100 text-orange-600' :
-                      item.color === 'purple' ? 'bg-purple-100 text-purple-600' :
-                      item.color === 'green' ? 'bg-green-100 text-green-600' :
-                      item.color === 'yellow' ? 'bg-yellow-100 text-yellow-600' :
-                      'bg-gray-100 text-gray-600'
-                    )}>
+                    <div
+                      className={cn(
+                        'w-6 h-6 rounded-md flex items-center justify-center mr-2',
+                        item.color === 'blue'
+                          ? 'bg-blue-100 text-blue-600'
+                          : item.color === 'orange'
+                          ? 'bg-orange-100 text-orange-600'
+                          : item.color === 'purple'
+                          ? 'bg-purple-100 text-purple-600'
+                          : item.color === 'green'
+                          ? 'bg-green-100 text-green-600'
+                          : item.color === 'yellow'
+                          ? 'bg-yellow-100 text-yellow-600'
+                          : 'bg-gray-100 text-gray-600'
+                      )}
+                    >
                       <i className={item.icon} style={{ fontSize: '12px' }}></i>
                     </div>
                     <span className="text-xs font-medium whitespace-nowrap overflow-hidden text-ellipsis">
                       {item.name}
                     </span>
                   </div>
-                ))
-              }
+                ))}
             </div>
             <Button
               variant="ghost"

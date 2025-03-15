@@ -94,18 +94,17 @@ const WorkflowToolbar = ({
 
   return (
     <div className="h-12 border-b border-gray-200 bg-white flex items-center px-4 justify-between">
-      <div className="flex items-center">
-        <div className="mr-4">
-          <Input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            onBlur={handleBlur}
-            className="border-0 text-lg font-medium focus:outline-none focus:border-b-2 focus:border-primary w-64 px-0 h-auto"
-          />
-        </div>
+      {/* Left Side: Workflow Name & Status */}
+      <div className="flex items-center gap-4">
+        <Input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          onBlur={handleBlur}
+          className="border-0 text-lg font-medium focus:outline-none focus:border-b-2 focus:border-primary w-64 px-0 h-auto"
+        />
         <div className={cn(
-          "flex items-center space-x-1 text-sm rounded-full px-3 py-1",
+          "flex items-center gap-2 text-sm rounded-full px-3 py-1",
           {
             "bg-green-100 text-green-800": status === "active",
             "bg-yellow-100 text-yellow-800": status === "draft",
@@ -123,8 +122,14 @@ const WorkflowToolbar = ({
           <span>{status === "active" ? "Active" : status === "draft" ? "Draft" : "Error"}</span>
         </div>
       </div>
+
+      {/* Right Side: Buttons & Dropdown */}
       <div className="flex space-x-2">
-        <Button variant="outline" size="sm" onClick={() => window.location.href = `/history?workflow=${workflowId}`}>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => window.location.href = `/history?workflow=${workflowId}`}
+        >
           <History className="mr-1 h-4 w-4" />
           History
         </Button>
@@ -136,13 +141,15 @@ const WorkflowToolbar = ({
           <PlayCircle className="mr-1 h-4 w-4" />
           Run
         </Button>
+
+        {/* More Options Dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="icon">
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
+          <DropdownMenuContent align="end" className="z-50 mt-2 shadow-lg border bg-white">
             <DropdownMenuItem onClick={onSave}>
               <Save className="mr-2 h-4 w-4" />
               Save Workflow

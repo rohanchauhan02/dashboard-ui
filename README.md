@@ -1,10 +1,6 @@
-# Orchestrator - Visual Workflow Automation Platform
+# Orchestra - Visual Workflow Automation Platform
 
 Orchestrator is a powerful workflow automation platform with a visual designer, rule engine, and intelligent recommendations. Build, connect, and automate workflows with ease.
-
-<div align="center">
-  <img src="https://github.com/yourusername/orchestrator/raw/main/docs/images/screenshot.png" alt="Orchestrator Screenshot" width="800">
-</div>
 
 ## Features
 
