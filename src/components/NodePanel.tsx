@@ -21,10 +21,9 @@ interface NodeData {
 
 interface NodePanelProps {
   selectedNode: Node<NodeData> | null;
-  onNodeSelect: (node: Node<NodeData> | null) => void;
+  onNodeSelect: () => void;
   onNodeUpdate: (nodeId: string, data: Partial<NodeData>) => void;
 }
-
 const NodePanel = ({ selectedNode, onNodeSelect, onNodeUpdate }: NodePanelProps) => {
   const [searchQuery, setSearchQuery] = useState("");
 

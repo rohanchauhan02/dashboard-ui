@@ -3,15 +3,20 @@ import { Toaster } from "./components/ui/toaster";
 import NotFound from "./pages/not-found";
 import Dashboard from "./pages/dashboard";
 import WorkflowEditor from "./pages/workflow-editor";
+import Home from "./pages/home";
 import ExecutionHistory from "./pages/execution-history";
 import Layout from "./components/Layout";
+import CreateRule from "./pages/CreateRule";
+import AIWorkflowBuilder from "./pages/AIWorkflowBuilder";
 
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={Dashboard} />
+      <Route path="/" component={Home} />
+      <Route path="/workflows" component={Dashboard} />
       <Route path="/workflows/:id" component={WorkflowEditor} />
-      <Route path="/workflows/new" component={WorkflowEditor} />
+      <Route path="/create-rule" component={CreateRule} />
+      <Route path="/ai-workflow" component={AIWorkflowBuilder} />
       <Route path="/history" component={ExecutionHistory} />
       <Route component={NotFound} />
     </Switch>

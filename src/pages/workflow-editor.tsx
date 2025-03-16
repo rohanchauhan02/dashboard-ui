@@ -14,6 +14,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Activity, BookOpen, GitFork, Code, LucideIcon, Settings } from 'lucide-react';
 
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 const WorkflowEditor = () => {
   const params = useParams<{ id: string }>();
   const [_, navigate] = useLocation();
@@ -27,10 +29,11 @@ const WorkflowEditor = () => {
   const [workflowName, setWorkflowName] = useState('New Workflow');
   const [status, setStatus] = useState<'active' | 'draft' | 'error'>('draft');
   const [recommendations, setRecommendations] = useState<any[]>([]);
+  const [activeTab, setActiveTab] = useState("canvas");
 
   // Fetch workflow if editing existing one
   const { data: workflow, isLoading } = useQuery({
-    queryKey: [`/api/workflows/${params.id}`],
+    queryKey: [`${BASE_URL}/v1/workflows/${params.id}`],
     enabled: !isNew,
   });
 
@@ -54,10 +57,10 @@ const WorkflowEditor = () => {
       };
 
       if (isNew) {
-        const response = await apiRequest('POST', '/api/workflows', workflowData);
+        const response = await apiRequest('POST', `${BASE_URL}/v1/workflows`, workflowData);
         return response.json();
       } else {
-        const response = await apiRequest('PUT', `/api/workflows/${params.id}`, workflowData);
+        const response = await apiRequest('PUT', `${BASE_URL}/v1/workflows/${params.id}`, workflowData);
         return response.json();
       }
     },
@@ -70,7 +73,7 @@ const WorkflowEditor = () => {
       if (isNew && data.id) {
         navigate(`/workflows/${data.id}`);
       } else {
-        queryClient.invalidateQueries({ queryKey: [`/api/workflows/${params.id}`] });
+        queryClient.invalidateQueries({ queryKey: [`${BASE_URL}/v1/workflows/${params.id}`] });
       }
     },
     onError: (error) => {
@@ -86,7 +89,7 @@ const WorkflowEditor = () => {
   const getRecommendations = useCallback(async () => {
     try {
       if (nodes.length > 0) {
-        const response = await apiRequest('POST', '/api/workflows/recommendations', { nodes, edges });
+        const response = await apiRequest('POST', '${BASE_URL}/v1/workflows/recommendations', { nodes, edges });
         const data = await response.json();
         setRecommendations(data);
         setShowRecommendations(true);
@@ -102,7 +105,7 @@ const WorkflowEditor = () => {
   }, []);
 
   // Handle node updates (configuration, etc.)
-  const onNodeUpdate = useCallback((nodeId: string, data: any) => {
+  const onNodeUpdate = useCallback((nodeId: string, data: unknown) => {
     setNodes((nds) =>
       nds.map((node) => {
         if (node.id === nodeId) {
@@ -222,8 +225,6 @@ const WorkflowEditor = () => {
       </div>
     );
   }
-
-  const [activeTab, setActiveTab] = useState("canvas");
 
   return (
     <div className="flex flex-col h-full">
@@ -392,5 +393,4 @@ const WorkflowEditor = () => {
     </div>
   );
 };
-
 export default WorkflowEditor;

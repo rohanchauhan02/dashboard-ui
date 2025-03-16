@@ -7,13 +7,22 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { Clock, History, PlayCircle, MoreHorizontal, Trash, Copy, Save } from "lucide-react";
+import {
+  Clock,
+  History,
+  PlayCircle,
+  MoreHorizontal,
+  Trash,
+  Copy,
+  Save,
+} from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 interface WorkflowToolbarProps {
   workflowId: string | undefined;
   workflowName: string;
@@ -29,7 +38,7 @@ const WorkflowToolbar = ({
   status,
   onNameChange,
   onSave,
-  onRun
+  onRun,
 }: WorkflowToolbarProps) => {
   const [name, setName] = useState(workflowName);
   const { toast } = useToast();
@@ -37,7 +46,11 @@ const WorkflowToolbar = ({
   const runMutation = useMutation({
     mutationFn: async () => {
       if (!workflowId) return;
-      const response = await apiRequest('POST', `/api/workflows/${workflowId}/run`, {});
+      const response = await apiRequest(
+        "POST",
+        `/api/workflows/${workflowId}/run`,
+        {}
+      );
       return response.json();
     },
     onSuccess: () => {
@@ -45,7 +58,9 @@ const WorkflowToolbar = ({
         title: "Workflow running",
         description: "Workflow execution started successfully",
       });
-      queryClient.invalidateQueries({ queryKey: [`/api/workflows/${workflowId}`] });
+      queryClient.invalidateQueries({
+        queryKey: [`/api/workflows/${workflowId}`],
+      });
     },
     onError: (error) => {
       toast({
@@ -53,21 +68,21 @@ const WorkflowToolbar = ({
         description: error.message,
         variant: "destructive",
       });
-    }
+    },
   });
 
   const deleteMutation = useMutation({
     mutationFn: async () => {
       if (!workflowId) return;
-      await apiRequest('DELETE', `/api/workflows/${workflowId}`, {});
+      await apiRequest("DELETE", `${BASE_URL}/v1/workflows/${workflowId}`, {});
     },
     onSuccess: () => {
       toast({
         title: "Workflow deleted",
         description: "Workflow was deleted successfully",
       });
-      queryClient.invalidateQueries({ queryKey: ['/api/workflows'] });
-      window.location.href = '/';
+      queryClient.invalidateQueries({ queryKey: ["/api/workflows"] });
+      window.location.href = "/";
     },
     onError: (error) => {
       toast({
@@ -75,7 +90,7 @@ const WorkflowToolbar = ({
         description: error.message,
         variant: "destructive",
       });
-    }
+    },
   });
 
   const handleBlur = () => {
@@ -103,32 +118,46 @@ const WorkflowToolbar = ({
           onBlur={handleBlur}
           className="border-0 text-lg font-medium focus:outline-none focus:border-b-2 focus:border-primary w-64 px-0 h-auto"
         />
-        <div className={cn(
-          "flex items-center gap-2 text-sm rounded-full px-3 py-1",
-          {
-            "bg-green-100 text-green-800": status === "active",
-            "bg-yellow-100 text-yellow-800": status === "draft",
-            "bg-red-100 text-red-800": status === "error"
-          }
-        )}>
-          <span className={cn(
-            "w-2 h-2 rounded-full",
+        <div
+          className={cn(
+            "flex items-center gap-2 text-sm rounded-full px-3 py-1",
             {
+              "bg-green-100 text-green-800": status === "active",
+              "bg-yellow-100 text-yellow-800": status === "draft",
+              "bg-red-100 text-red-800": status === "error",
+            }
+          )}
+        >
+          <span
+            className={cn("w-2 h-2 rounded-full", {
               "bg-green-500": status === "active",
               "bg-yellow-500": status === "draft",
-              "bg-red-500": status === "error"
-            }
-          )}></span>
-          <span>{status === "active" ? "Active" : status === "draft" ? "Draft" : "Error"}</span>
+              "bg-red-500": status === "error",
+            })}
+          ></span>
+          <span>
+            {status === "active"
+              ? "Active"
+              : status === "draft"
+                ? "Draft"
+                : "Error"}
+          </span>
         </div>
       </div>
 
       {/* Right Side: Buttons & Dropdown */}
       <div className="flex space-x-2">
+        <Button variant="outline" size="sm" onClick={onSave}>
+          <Save className="mr-2 h-4 w-4" />
+          Save Workflow
+        </Button>
+
         <Button
           variant="outline"
           size="sm"
-          onClick={() => window.location.href = `/history?workflow=${workflowId}`}
+          onClick={() =>
+            (window.location.href = `/history?workflow=${workflowId}`)
+          }
         >
           <History className="mr-1 h-4 w-4" />
           History
@@ -137,7 +166,12 @@ const WorkflowToolbar = ({
           <Clock className="mr-1 h-4 w-4" />
           Schedule
         </Button>
-        <Button onClick={handleRun} disabled={runMutation.isPending}>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleRun}
+          disabled={runMutation.isPending}
+        >
           <PlayCircle className="mr-1 h-4 w-4" />
           Run
         </Button>
@@ -149,11 +183,10 @@ const WorkflowToolbar = ({
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="z-50 mt-2 shadow-lg border bg-white">
-            <DropdownMenuItem onClick={onSave}>
-              <Save className="mr-2 h-4 w-4" />
-              Save Workflow
-            </DropdownMenuItem>
+          <DropdownMenuContent
+            align="end"
+            className="z-50 mt-2 shadow-lg border bg-white"
+          >
             <DropdownMenuItem>
               <Copy className="mr-2 h-4 w-4" />
               Duplicate

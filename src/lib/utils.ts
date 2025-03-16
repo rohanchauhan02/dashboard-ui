@@ -11,13 +11,13 @@ export const nodeTypeIcons: Record<string, { icon: string; color: string }> = {
   webhook: { icon: "ri-webhook-line", color: "bg-purple-100 text-purple-600" },
   manual: { icon: "ri-user-line", color: "bg-blue-100 text-blue-600" },
   api_trigger: { icon: "ri-api-line", color: "bg-blue-100 text-blue-600" },
-  
+
   // Logic
   condition: { icon: "ri-git-branch-line", color: "bg-orange-100 text-orange-600" },
   loop: { icon: "ri-loop-left-line", color: "bg-orange-100 text-orange-600" },
   switch: { icon: "ri-switch-line", color: "bg-orange-100 text-orange-600" },
   delay: { icon: "ri-time-line", color: "bg-orange-100 text-orange-600" },
-  
+
   // Services & Integrations
   email: { icon: "ri-mail-line", color: "bg-blue-100 text-blue-600" },
   database: { icon: "ri-database-2-line", color: "bg-green-100 text-green-600" },
@@ -27,16 +27,16 @@ export const nodeTypeIcons: Record<string, { icon: string; color: string }> = {
   whatsapp: { icon: "ri-whatsapp-line", color: "bg-green-100 text-green-600" },
   sms: { icon: "ri-message-2-line", color: "bg-blue-100 text-blue-600" },
   push_notification: { icon: "ri-notification-3-line", color: "bg-red-100 text-red-600" },
-  
+
   // Project Tools
   github: { icon: "ri-github-fill", color: "bg-gray-900 text-white" },
   gitlab: { icon: "ri-gitlab-fill", color: "bg-orange-100 text-orange-600" },
-  bitbucket: { icon: "ri-cloud-line", color: "bg-blue-100 text-blue-600" },
+  bitbucket: { icon: "ri-bitbucket-line", color: "bg-blue-100 text-blue-600" },
   jira: { icon: "ri-jira-line", color: "bg-blue-500 text-white" },
   trello: { icon: "ri-trello-line", color: "bg-blue-100 text-blue-600" },
   asana: { icon: "ri-task-line", color: "bg-red-100 text-red-600" },
   clickup: { icon: "ri-checkbox-circle-line", color: "bg-purple-100 text-purple-600" },
-  
+
   // API & Data
   api_call: { icon: "ri-api-line", color: "bg-green-100 text-green-600" },
   rest_api: { icon: "ri-global-line", color: "bg-green-100 text-green-600" },
@@ -45,7 +45,7 @@ export const nodeTypeIcons: Record<string, { icon: string; color: string }> = {
   json: { icon: "ri-braces-line", color: "bg-green-100 text-green-600" },
   xml: { icon: "ri-file-code-line", color: "bg-blue-100 text-blue-600" },
   csv: { icon: "ri-file-excel-line", color: "bg-green-100 text-green-600" },
-  
+
   // Cloud Services
   aws: { icon: "ri-amazon-line", color: "bg-yellow-100 text-yellow-800" },
   s3: { icon: "ri-folder-upload-line", color: "bg-yellow-100 text-yellow-800" },
@@ -57,28 +57,28 @@ export const nodeTypeIcons: Record<string, { icon: string; color: string }> = {
   dropbox: { icon: "ri-dropbox-line", color: "bg-blue-100 text-blue-600" },
   onedrive: { icon: "ri-microsoft-line", color: "bg-blue-100 text-blue-600" },
   box: { icon: "ri-file-line", color: "bg-blue-100 text-blue-600" },
-  
+
   // Payments & Commerce
   stripe: { icon: "ri-bank-card-line", color: "bg-purple-100 text-purple-800" },
   paypal: { icon: "ri-paypal-line", color: "bg-blue-100 text-blue-600" },
   shopify: { icon: "ri-shopping-bag-line", color: "bg-green-100 text-green-600" },
   woocommerce: { icon: "ri-shopping-cart-line", color: "bg-purple-100 text-purple-600" },
   square: { icon: "ri-wallet-3-line", color: "bg-gray-800 text-white" },
-  
+
   // CRM & Marketing
   salesforce: { icon: "ri-customer-service-2-line", color: "bg-blue-100 text-blue-600" },
   hubspot: { icon: "ri-group-line", color: "bg-orange-100 text-orange-600" },
   mailchimp: { icon: "ri-mail-send-line", color: "bg-yellow-100 text-yellow-800" },
   sendgrid: { icon: "ri-mail-line", color: "bg-blue-100 text-blue-600" },
   airtable: { icon: "ri-table-line", color: "bg-green-100 text-green-600" },
-  
+
   // Social Media
   twitter: { icon: "ri-twitter-x-line", color: "bg-gray-900 text-white" },
   facebook: { icon: "ri-facebook-line", color: "bg-blue-600 text-white" },
   instagram: { icon: "ri-instagram-line", color: "bg-pink-100 text-pink-600" },
   linkedin: { icon: "ri-linkedin-line", color: "bg-blue-100 text-blue-600" },
   youtube: { icon: "ri-youtube-line", color: "bg-red-100 text-red-600" },
-  
+
   // AI & ML
   openai: { icon: "ri-openai-fill", color: "bg-green-100 text-green-600" },
   bing_ai: { icon: "ri-microsoft-line", color: "bg-blue-100 text-blue-600" },
@@ -137,7 +137,7 @@ export const nodeCategories = [
     items: [
       { type: "action", subtype: "github", name: "GitHub", icon: "ri-github-fill", color: "gray" },
       { type: "action", subtype: "gitlab", name: "GitLab", icon: "ri-gitlab-fill", color: "orange" },
-      { type: "action", subtype: "bitbucket", name: "Bitbucket", icon: "ri-cloud-line", color: "blue" },
+      { type: "action", subtype: "bitbucket", name: "Bitbucket", icon: "ri-bitbucket-line", color: "blue" },
       { type: "action", subtype: "jira", name: "Jira", icon: "ri-jira-line", color: "blue" },
       { type: "action", subtype: "trello", name: "Trello", icon: "ri-trello-line", color: "blue" },
       { type: "action", subtype: "asana", name: "Asana", icon: "ri-task-line", color: "red" },
@@ -199,12 +199,12 @@ export const nodeCategories = [
 ];
 
 export const getColorForNodeType = (type: string, subtype: string): string => {
-  const category = nodeCategories.find(category => 
+  const category = nodeCategories.find(category =>
     category.items.some(item => item.type === type && item.subtype === subtype)
   );
-  
+
   if (!category) return "blue";
-  
+
   const item = category.items.find(item => item.type === type && item.subtype === subtype);
   return item?.color || "blue";
 };

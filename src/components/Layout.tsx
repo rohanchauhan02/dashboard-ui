@@ -9,7 +9,7 @@ interface LayoutProps {
 
 const Layout = ({ children }: LayoutProps) => {
   const [location] = useLocation();
-  
+
   // Don't show sidebar on 404 page
   if (location === "/404") {
     return (
@@ -23,7 +23,7 @@ const Layout = ({ children }: LayoutProps) => {
     <div className="h-screen flex flex-col">
       <AppHeader />
       <div className="flex-1 flex overflow-hidden">
-        <Sidebar />
+        {/* <Sidebar /> */}
         <main className="flex-1 overflow-auto bg-gray-50">
           {children}
         </main>
