@@ -173,25 +173,16 @@ const nodeTypes = {
 
     return (
       <div className="flex flex-col items-center">
-        <div className="rounded bg-gray-200 px-4 py-3 border border-blue-200 shadow-sm relative group hover:shadow-md transition-all duration-200">
-          {/* Target Handle */}
-          <Handle
-            type="target"
-            position={Position.Left}
-            className="w-2 h-2 bg-blue-500 border-2 border-white opacity-0 group-hover:opacity-100 transition-opacity"
-            style={{ zIndex: 20, left: -2 }}
-          />
-
-          {/* Source Handle */}
-          <Handle
-            type="source"
-            position={Position.Right}
-            className="w-2 h-2 bg-blue-500 border-2 border-white opacity-0 group-hover:opacity-100 transition-opacity"
-            style={{ zIndex: 20, right: -6 }}
-          />
+        <div className="relative group hover:shadow-md transition-all duration-200">
+          {/* Action Buttons */}
+          <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 hidden group-hover:flex space-x-2 bg-gray-300 p-1 rounded shadow-md z-20">
+            <button className="text-[6px] p-1/4 hover:bg-gray-100 rounded">▶️</button>
+            <button className="text-[6px] p-1/4 hover:bg-gray-100 rounded">❌</button>
+            <button className="text-[6px] p-1/4 hover:bg-gray-100 rounded">⋮</button>
+          </div>
 
           {/* Node Content */}
-          <div className="flex items-center">
+          <div className="rounded bg-gray-200 px-3 py-3 border border-blue-200 shadow-sm flex flex-col items-center">
             {/* Icon Container */}
             <div
               className={cn(
@@ -201,22 +192,31 @@ const nodeTypes = {
             >
               <i className={data.icon} style={{ fontSize: "1rem" }}></i>
             </div>
-
-            {/* Label */}
-            {/* <div className="flex-1">
-              <div className="text-sm font-semibold text-gray-800 truncate">
-                {data.label}
-              </div>
-              <div className="text-xs text-gray-500 mt-1">{data.type}</div>
-            </div> */}
           </div>
+
+          {/* Target Handle */}
+          <Handle
+            type="target"
+            position={Position.Left}
+            className="w-3 h-3 bg-blue-500 border-2 border-white opacity-0 group-hover:opacity-100 transition-opacity"
+            style={{ zIndex: 20, left: -2 }}
+          />
+
+          {/* Source Handle */}
+          <Handle
+            type="source"
+            position={Position.Right}
+            className="w-3 h-3 bg-blue-500 border-2 border-white opacity-0 group-hover:opacity-100 transition-opacity"
+            style={{ zIndex: 20, right: -6 }}
+          />
         </div>
         {/* Node Name Below */}
         <div className="text-[5px] text-black-500 mt-1">{data.label}</div>
       </div>
     );
   },
-}
+};
+
 
 const edgeTypes = {
   custom: CustomEdge,

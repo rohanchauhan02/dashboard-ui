@@ -227,10 +227,10 @@ const WorkflowEditor = () => {
                 onEdgesChange={onEdgesChange}
                 onConnect={onConnect}
               />
-              <NodePanel
+              {/* <NodePanel
                 selectedNode={selectedNode}
                 onNodeSelect={setSelectedNode}
-              />
+              /> */}
             </ReactFlowProvider>
           </TabsContent>
         </Tabs>
