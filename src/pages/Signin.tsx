@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 const SignIn = () => {
   const [, setLocation] = useLocation();
 
-  const handleSubmit = (e: { preventDefault: () => void; }) => {
+  const handleSubmit = (e: { preventDefault: () => void }) => {
     e.preventDefault();
     localStorage.setItem("isSignedIn", "true");
     setLocation("/workflows");
@@ -13,7 +13,7 @@ const SignIn = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-6">
-      <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-lg space-y-6">
+      <div className="bg-white rounded border-2  w-full max-w-md bg-white p-8 shadow-lg space-y-6">
         <h2 className="text-3xl font-bold text-gray-900 text-center">
           Sign In
         </h2>
@@ -21,7 +21,7 @@ const SignIn = () => {
           {/* Email Input */}
           <div>
             <label
-              className="block text-gray-700 text-sm font-medium mb-2"
+              className="block text-gray-800 text-sm font-bold mb-2"
               htmlFor="email"
             >
               Email
@@ -31,13 +31,13 @@ const SignIn = () => {
               id="email"
               placeholder="Enter your email"
               required
-              className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600"
+              className="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-purple-600"
             />
           </div>
           {/* Password Input */}
           <div>
             <label
-              className="block text-gray-700 text-sm font-medium mb-2"
+              className="block text-gray-700 text-sm font-bold mb-2"
               htmlFor="password"
             >
               Password
@@ -47,13 +47,13 @@ const SignIn = () => {
               id="password"
               placeholder="Enter your password"
               required
-              className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600"
+              className="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-purple-600"
             />
           </div>
           {/* Sign In Button */}
           <Button
             type="submit"
-            className="w-full bg-purple-600 hover:bg-purple-700 py-3 text-lg"
+            className="rounded w-full bg-yellow-400 hover:bg-blue-400 py-3 text-lg"
           >
             Sign In
           </Button>

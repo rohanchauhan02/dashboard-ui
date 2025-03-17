@@ -147,12 +147,12 @@ const WorkflowToolbar = ({
 
       {/* Right Side: Buttons & Dropdown */}
       <div className="flex space-x-2">
-        <Button variant="outline" size="sm" onClick={onSave}>
+        <Button className="bg-gray-200 rounded border-2" variant="outline" size="sm" onClick={onSave}>
           <Save className="mr-2 h-4 w-4" />
           Save Workflow
         </Button>
 
-        <Button
+        <Button className="bg-gray-200 rounded border-2"
           variant="outline"
           size="sm"
           onClick={() =>
@@ -162,11 +162,14 @@ const WorkflowToolbar = ({
           <History className="mr-1 h-4 w-4" />
           History
         </Button>
-        <Button variant="outline" size="sm">
+        <Button
+        className="bg-gray-200 rounded border-2"
+        variant="outline" size="sm">
           <Clock className="mr-1 h-4 w-4" />
           Schedule
         </Button>
         <Button
+        className="bg-gray-200 rounded border-2"
           variant="outline"
           size="sm"
           onClick={handleRun}
@@ -179,7 +182,7 @@ const WorkflowToolbar = ({
         {/* More Options Dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="icon">
+            <Button className="bg-gray-200 rounded border-2" variant="outline" size="icon">
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>

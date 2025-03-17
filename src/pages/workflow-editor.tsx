@@ -18,6 +18,7 @@ import NodePanel from "@/components/NodePanel";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Activity, BookOpen, GitFork } from "lucide-react";
 import Sidebar from "@/components/Sidebar";
+import NewWorkflowModal from "./new-workflow";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -30,9 +31,7 @@ const WorkflowEditor = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
-  const [workflowName, setWorkflowName] = useState(
-    isNew ? location.state?.name || "New Workflow" : "" // Initialize name from location.state for new workflows
-  );
+  const [workflowName, setWorkflowName] = useState("untitled workflow");
   const [status, setStatus] = useState<"active" | "draft" | "error">("draft");
   const [activeTab, setActiveTab] = useState("canvas");
 
@@ -49,7 +48,6 @@ const WorkflowEditor = () => {
         throw new Error("Failed to fetch workflow");
       }
       const data = await res.json();
-      console.log("Workflow Data:", data); // Debugging
       return data.data;
     },
     enabled: !isNew,
@@ -58,6 +56,7 @@ const WorkflowEditor = () => {
         title: "Error fetching workflow",
         description: error.message,
         status: "error",
+        duration: 50,
       });
     },
   });
@@ -77,6 +76,14 @@ const WorkflowEditor = () => {
     (connection: Connection) => setEdges((eds) => addEdge(connection, eds)),
     [setEdges]
   );
+
+  const handleCreateWorkflow = (id: string, name: string) => {
+    queryClient.invalidateQueries({ queryKey: ["/v1/workflows"] });
+    setIsModalOpen(false);
+    navigate(`/workflows/${id}`, {
+      state: { name: name },
+    });
+  };
 
   // Save workflow mutation
   const saveWorkflowMutation = useMutation({
@@ -106,19 +113,30 @@ const WorkflowEditor = () => {
       toast({
         title: "Workflow saved successfully!",
         status: "success",
+        duration: 1000,
+        className: "rounded bg-green-500",
       });
       if (isNew) {
-        navigate(`/workflows/${data.data.id}/editor`, {
-          state: { name: workflowName }, // Pass the updated name in location.state
-        });
+        navigate(
+          <NewWorkflowModal
+            open={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            onSubmit={handleCreateWorkflow}
+          />,
+          {
+            state: { name: workflowName },
+          }
+        );
       }
-      queryClient.invalidateQueries(["/v1/workflows"]);
+      queryClient.invalidateQueries(["workflows"]);
     },
     onError: (error) => {
       toast({
         title: "Error saving workflow",
         description: error.message,
         status: "error",
+        duration: 1000,
+        className: "rounded bg-red-500",
       });
     },
   });
@@ -145,7 +163,9 @@ const WorkflowEditor = () => {
   if (fetchError) {
     return (
       <div className="flex-1 flex items-center justify-center">
-        <p className="text-red-500">Error loading workflow. Please try again.</p>
+        <p className="text-red-500">
+          Error loading workflow. Please try again.
+        </p>
       </div>
     );
   }

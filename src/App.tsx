@@ -10,6 +10,7 @@ import CreateRule from "./pages/CreateRule";
 import AIWorkflowBuilder from "./pages/AIWorkflowBuilder";
 import Signup from "./pages/Signup";
 import SignIn from "./pages/Signin";
+import "remixicon/fonts/remixicon.css";
 
 function Router() {
   return (

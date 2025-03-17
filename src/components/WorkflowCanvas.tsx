@@ -51,7 +51,6 @@ interface NodeData {
   config: Record<string, any>;
 }
 
-// Custom edge component that shows a highlighted style when selected
 const CustomEdge = ({
   id,
   sourceX,
@@ -63,8 +62,11 @@ const CustomEdge = ({
   style = {},
   markerEnd,
   selected,
-}: EdgeProps) => {
-  // Get path for the edge
+  onAddNode,
+  onDeleteEdge,
+}: EdgeProps & { onAddNode: () => void; onDeleteEdge: (id: string) => void }) => {
+  const [hovered, setHovered] = useState(false);
+
   const [edgePath, labelX, labelY] = getSmoothStepPath({
     sourceX,
     sourceY,
@@ -74,39 +76,81 @@ const CustomEdge = ({
     targetPosition,
   });
 
-  // Set a thicker and highlighted style when selected
   const edgeStyle = {
-    strokeWidth: selected ? 3 : 2,
-    stroke: selected ? "#4F46E5" : (style?.stroke as string) || "#94A3B8",
+    strokeWidth: selected ? 1 : 1,
+    stroke: selected ? "rgba(7, 6, 13, 0.3)" : (style?.stroke as string) || "rgba(28, 10, 188, 0.3)",
     opacity: 0.8,
     transition: "all 0.2s ease",
-    filter: selected ? "drop-shadow(0 0 3px rgba(79, 70, 229, 0.3))" : "none",
+    filter: selected ? "drop-shadow(0 0 0px rgba(5, 4, 17, 0.3))" : "none",
+    strokeDasharray: "none", // Ensures solid line
   };
 
-  // Adjust marker style if selected
   let customMarkerEnd: any = markerEnd;
   if (selected && markerEnd) {
-    // Create a new marker with the selected color
-    // Handle both string and object type markers
     if (typeof markerEnd === "string") {
       customMarkerEnd = markerEnd;
     } else {
       customMarkerEnd = {
         type: MarkerType.ArrowClosed,
-        width: 15,
-        height: 15,
-        color: "#4F46E5",
+        width: 5,
+        height: 5,
+        color: "gba(5, 4, 17, 0.3)",
       };
     }
   }
 
   return (
-    <BaseEdge
-      path={edgePath}
-      markerEnd={customMarkerEnd}
-      style={edgeStyle}
-      id={id}
-    />
+    <g
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <BaseEdge path={edgePath} markerEnd={customMarkerEnd} style={edgeStyle} id={id} />
+      {hovered && (
+        <g>
+          {/* Add Node Button */}
+          <circle
+            cx={labelX - 10}
+            cy={labelY}
+            r={8}
+            fill="#4F46E5"
+            cursor="pointer"
+            onClick={onAddNode}
+          />
+          <text
+            x={labelX - 10}
+            y={labelY + 4}
+            fill="#fff"
+            fontSize={8}
+            textAnchor="middle"
+            cursor="pointer"
+            onClick={onAddNode}
+          >
+            +
+          </text>
+
+          {/* Delete Edge Button */}
+          <circle
+            cx={labelX + 10}
+            cy={labelY}
+            r={8}
+            fill="#E11D48"
+            cursor="pointer"
+            onClick={() => onDeleteEdge(id)}
+          />
+          <text
+            x={labelX + 10}
+            y={labelY + 4}
+            fill="#fff"
+            fontSize={8}
+            textAnchor="middle"
+            cursor="pointer"
+            onClick={() => onDeleteEdge(id)}
+          >
+            ×
+          </text>
+        </g>
+      )}
+    </g>
   );
 };
 
@@ -128,48 +172,52 @@ const nodeTypes = {
     };
 
     return (
-      <div className="px-4 py-4 rounded-lg bg-white border border-gray-200 shadow-md w-56 relative group hover:shadow-lg transition-all duration-200">
-        {/* Input handle on the left */}
-        <Handle
-          type="target"
-          position={Position.Left}
-          className="w-3 h-3 bg-blue-400 border-2 border-white opacity-0 group-hover:opacity-100 transition-opacity"
-          style={{ zIndex: 20, left: -1.5 }}
-        />
+      <div className="flex flex-col items-center">
+        <div className="rounded bg-gray-200 px-4 py-3 border border-blue-200 shadow-sm relative group hover:shadow-md transition-all duration-200">
+          {/* Target Handle */}
+          <Handle
+            type="target"
+            position={Position.Left}
+            className="w-2 h-2 bg-blue-500 border-2 border-white opacity-0 group-hover:opacity-100 transition-opacity"
+            style={{ zIndex: 20, left: -2 }}
+          />
 
-        {/* Output handle on the right */}
-        <Handle
-          type="source"
-          position={Position.Right}
-          className="w-3 h-3 bg-blue-400 border-2 border-white opacity-0 group-hover:opacity-100 transition-opacity"
-          style={{ zIndex: 20, right: -1.5 }}
-        />
+          {/* Source Handle */}
+          <Handle
+            type="source"
+            position={Position.Right}
+            className="w-2 h-2 bg-blue-500 border-2 border-white opacity-0 group-hover:opacity-100 transition-opacity"
+            style={{ zIndex: 20, right: -6 }}
+          />
 
-        <div className="flex items-center mb-3">
-          <div
-            className={cn(
-              "w-10 h-10 rounded-md flex items-center justify-center mr-3 shadow-sm",
-              getColorClass(data.color)
-            )}
-          >
-            <i className={data.icon} style={{ fontSize: "1.25rem" }}></i>
-          </div>
-          <div className="text-sm font-medium leading-tight overflow-hidden text-ellipsis flex-1">
-            {data.label}
+          {/* Node Content */}
+          <div className="flex items-center">
+            {/* Icon Container */}
+            <div
+              className={cn(
+                "w-3 h-3 rounded flex items-center justify-center",
+                getColorClass(data.color)
+              )}
+            >
+              <i className={data.icon} style={{ fontSize: "1rem" }}></i>
+            </div>
+
+            {/* Label */}
+            {/* <div className="flex-1">
+              <div className="text-sm font-semibold text-gray-800 truncate">
+                {data.label}
+              </div>
+              <div className="text-xs text-gray-500 mt-1">{data.type}</div>
+            </div> */}
           </div>
         </div>
-        <div className="flex justify-between items-center pt-2 border-t text-xs text-gray-500">
-          <span className="bg-gray-100 px-2 py-0.5 rounded-full">
-            {data.type}
-          </span>
-          <span className="font-mono text-[10px] text-gray-400">v1.0</span>
-        </div>
+        {/* Node Name Below */}
+        <div className="text-[5px] text-black-500 mt-1">{data.label}</div>
       </div>
     );
   },
-};
+}
 
-// Map of edge types
 const edgeTypes = {
   custom: CustomEdge,
 };
@@ -182,8 +230,6 @@ interface WorkflowCanvasProps {
   onConnect: (params: any) => void;
   onNodeClick: (node: Node) => void;
   onPaneClick: () => void;
-  onDragOver: (event: React.DragEvent<HTMLDivElement>) => void;
-  onDrop: (event: React.DragEvent<HTMLDivElement>) => void;
 }
 
 const WorkflowCanvas = ({
@@ -194,8 +240,6 @@ const WorkflowCanvas = ({
   onConnect,
   onNodeClick,
   onPaneClick,
-  onDragOver,
-  onDrop,
 }: WorkflowCanvasProps) => {
   const reactFlowInstance = useReactFlow();
   const edgeUpdateSuccessful = useRef(true);
@@ -206,15 +250,55 @@ const WorkflowCanvas = ({
     y: number;
   } | null>(null);
 
-  // Update selected node when a node is clicked
+  // Handle node drop on the canvas
+  const onDrop = useCallback(
+    (event: React.DragEvent<HTMLDivElement>) => {
+      event.preventDefault();
+
+      // Get the node data from the drag event
+      const nodeData = JSON.parse(event.dataTransfer.getData("application/reactflow"));
+
+      // Calculate the position where the node is dropped
+      const position = reactFlowInstance.screenToFlowPosition({
+        x: event.clientX,
+        y: event.clientY,
+      });
+
+      // Create a new node
+      const newNode: Node<NodeData> = {
+        id: `node_${Date.now()}`, // Generate a unique ID
+        type: "custom", // Use the custom node type
+        position,
+        data: {
+          label: nodeData.name,
+          type: nodeData.type,
+          subtype: nodeData.subtype,
+          icon: nodeData.icon,
+          color: nodeData.color,
+          config: {}, // Initial configuration
+        },
+      };
+
+      // Add the new node to the nodes array
+      onNodesChange([{ type: "add", item: newNode }]);
+    },
+    [reactFlowInstance, onNodesChange]
+  );
+
+  // Allow drop operation
+  const onDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+  }, []);
+
+  // Handle node click
   const handleNodeClick = (node: Node) => {
     setSelectedNode(node);
-    setSelectedEdge(null); // Deselect any edge
+    setSelectedEdge(null);
     setEdgeMenuPosition(null);
     onNodeClick(node);
   };
 
-  // Handle edge click for showing edge context menu
+  // Handle edge click
   const handleEdgeClick = useCallback(
     (event: React.MouseEvent, edge: Edge) => {
       event.stopPropagation();
@@ -229,13 +313,13 @@ const WorkflowCanvas = ({
       });
 
       setSelectedEdge(edge);
-      setSelectedNode(null); // Deselect any node
+      setSelectedNode(null);
       setEdgeMenuPosition(position);
     },
     [reactFlowInstance]
   );
 
-  // Function to add a node in the middle of an edge
+  // Handle adding a node between edges
   const handleAddNodeBetween = useCallback(
     (nodeType: any) => {
       if (!selectedEdge || !edgeMenuPosition) return;
@@ -261,7 +345,6 @@ const WorkflowCanvas = ({
         id: `edge_${Date.now()}_1`,
         source: selectedEdge.source,
         target: newNodeId,
-        // Copy any style properties from the original edge
         style: selectedEdge.style,
         markerEnd: selectedEdge.markerEnd,
         animated: selectedEdge.animated,
@@ -271,7 +354,6 @@ const WorkflowCanvas = ({
         id: `edge_${Date.now()}_2`,
         source: newNodeId,
         target: selectedEdge.target,
-        // Copy any style properties from the original edge
         style: selectedEdge.style,
         markerEnd: selectedEdge.markerEnd,
         animated: selectedEdge.animated,
@@ -292,6 +374,7 @@ const WorkflowCanvas = ({
     [selectedEdge, edgeMenuPosition, onNodesChange, onEdgesChange]
   );
 
+  // Handle edge updates
   const onEdgeUpdateStart = useCallback(() => {
     edgeUpdateSuccessful.current = false;
   }, []);
@@ -325,10 +408,9 @@ const WorkflowCanvas = ({
     [onEdgesChange]
   );
 
-  // Function to handle node creation from the quick add menu
+  // Handle adding a node from the quick add menu
   const handleAddNode = useCallback(
     (nodeType: any) => {
-      // Get the center position of the current viewport
       const { x, y, zoom } = reactFlowInstance.getViewport();
       const centerX = reactFlowInstance.screenToFlowPosition({
         x: window.innerWidth / 2,
@@ -376,6 +458,8 @@ const WorkflowCanvas = ({
           onPaneClick();
         }}
         onEdgeClick={handleEdgeClick}
+        onDrop={onDrop}
+        onDragOver={onDragOver}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
         onEdgeUpdate={onEdgeUpdate}
@@ -385,28 +469,28 @@ const WorkflowCanvas = ({
         defaultEdgeOptions={{
           type: "custom",
           style: {
-            strokeWidth: 2,
+            strokeWidth: 1,
             stroke: "#94A3B8",
             opacity: 0.8,
             transition: "all 0.2s ease",
           },
           markerEnd: {
             type: MarkerType.ArrowClosed,
-            width: 15,
-            height: 15,
+            width: 10,
+            height: 10,
             color: "#94A3B8",
           },
           animated: true,
         }}
       >
         {/* Add Node Button */}
-        <Panel position="bottom-right" className="mb-10 mr-5">
+        <Panel position="top-left" className="mb-5 mr-5">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
                 size="icon"
-                className="rounded-full shadow-lg h-14 w-14 bg-gradient-to-tr from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 transition-all duration-300 transform hover:scale-105 border-2 border-white/70"
-                style={{ zIndex: 1000 }} // Ensure the button is on top
+                className="bg-green-400 rounded-full border-2 shadow-lg h-14 w-14 bg-gradient-to-tr from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 transition-all duration-300 transform hover:scale-105"
+                style={{ zIndex: 1000 }}
               >
                 <div className="absolute inset-0 rounded-full bg-white/10 backdrop-blur-[1px]"></div>
                 <Plus className="h-6 w-6 text-black relative z-10" />
@@ -414,11 +498,11 @@ const WorkflowCanvas = ({
             </DropdownMenuTrigger>
             <DropdownMenuContent
               align="end"
-              className=" bg-white  w-64 p-2 max-h-[70vh] overflow-y-auto"
+              className="bg-white w-64 p-2 max-h-[70vh] overflow-y-auto"
             >
               {nodeCategories.map((category) => (
                 <div key={category.name} className="mb-3">
-                  <div className=" font-medium text-sm mb-2 px-2 text-gray-700 flex items-center">
+                  <div className="font-medium text-sm mb-2 px-2 text-gray-700 flex items-center">
                     {category.name === "Triggers" && (
                       <Zap className="h-3 w-3 mr-1.5 text-blue-500" />
                     )}
@@ -448,20 +532,20 @@ const WorkflowCanvas = ({
                       >
                         <div
                           className={cn(
-                            "w-6 h-6 rounded-md flex items-center justify-center mr-2",
+                            "w-3 h-3 rounded-md flex items-center justify-center mr-2",
                             item.color === "blue"
                               ? "bg-blue-100 text-blue-600"
                               : item.color === "orange"
-                                ? "bg-orange-100 text-orange-600"
-                                : item.color === "purple"
-                                  ? "bg-purple-100 text-purple-600"
-                                  : item.color === "green"
-                                    ? "bg-green-100 text-green-600"
-                                    : item.color === "yellow"
-                                      ? "bg-yellow-100 text-yellow-600"
-                                      : item.color === "gray"
-                                        ? "bg-gray-800 text-white"
-                                        : "bg-gray-100 text-gray-600"
+                              ? "bg-orange-100 text-orange-600"
+                              : item.color === "purple"
+                              ? "bg-purple-100 text-purple-600"
+                              : item.color === "green"
+                              ? "bg-green-100 text-green-600"
+                              : item.color === "yellow"
+                              ? "bg-yellow-100 text-yellow-600"
+                              : item.color === "gray"
+                              ? "bg-gray-800 text-white"
+                              : "bg-gray-100 text-gray-600"
                           )}
                         >
                           <i
@@ -481,7 +565,7 @@ const WorkflowCanvas = ({
           </DropdownMenu>
         </Panel>
 
-        {/* Node Context Menu for Edit/View/Delete */}
+        {/* Node Context Menu */}
         {selectedNode && (
           <Panel position="top-right" className="mr-5 mt-5">
             <div className="flex flex-col gap-2">
@@ -500,7 +584,7 @@ const WorkflowCanvas = ({
                 className="h-9 w-9 rounded-full border-gray-200 bg-white shadow-sm"
                 onClick={() => {
                   onNodesChange([{ type: "remove", id: selectedNode.id }]);
-                  onPaneClick(); // Deselect after deletion
+                  onPaneClick();
                 }}
                 title="Delete Node"
               >
@@ -529,7 +613,7 @@ const WorkflowCanvas = ({
           </Panel>
         )}
 
-        {/* Edge Context Menu for adding nodes in between */}
+        {/* Edge Context Menu */}
         {selectedEdge && edgeMenuPosition && (
           <div
             className="absolute bg-white shadow-lg rounded-lg p-4 z-10 w-72"
@@ -545,31 +629,32 @@ const WorkflowCanvas = ({
             <div className="grid grid-cols-2 gap-2 mt-3">
               {nodeCategories
                 .flatMap((category) => category.items)
-                .filter((item) => item.type !== "Triggers") // No trigger nodes in the middle
-                .slice(0, 8) // Limit to 8 options for simplicity
+                .filter((item) => item.type !== "Triggers")
+                .slice(0, 8)
                 .map((item) => (
                   <div
                     key={item.name}
                     className="flex items-center cursor-pointer px-2 py-1.5 rounded-md hover:bg-gray-100"
                     onClick={() => handleAddNodeBetween(item)}
                   >
+                    {/* <Plus className="h-4 w-4 mr-2" /> */}
                     <div
                       className={cn(
                         "w-6 h-6 rounded-md flex items-center justify-center mr-2",
                         item.color === "blue"
                           ? "bg-blue-100 text-blue-600"
                           : item.color === "orange"
-                            ? "bg-orange-100 text-orange-600"
-                            : item.color === "purple"
-                              ? "bg-purple-100 text-purple-600"
-                              : item.color === "green"
-                                ? "bg-green-100 text-green-600"
-                                : item.color === "yellow"
-                                  ? "bg-yellow-100 text-yellow-600"
-                                  : "bg-gray-100 text-gray-600"
+                          ? "bg-orange-100 text-orange-600"
+                          : item.color === "purple"
+                          ? "bg-purple-100 text-purple-600"
+                          : item.color === "green"
+                          ? "bg-green-100 text-green-600"
+                          : item.color === "yellow"
+                          ? "bg-yellow-100 text-yellow-600"
+                          : "bg-gray-100 text-gray-600"
                       )}
                     >
-                      <i className={item.icon} style={{ fontSize: "12px" }}></i>
+                      <i className={item.icon} style={{ fontSize: "10px" }}></i>
                     </div>
                     <span className="text-xs font-medium whitespace-nowrap overflow-hidden text-ellipsis">
                       {item.name}

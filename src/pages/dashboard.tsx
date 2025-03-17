@@ -101,11 +101,11 @@ const Dashboard = () => {
   );
 
   return (
-    <div className="container mx-auto py-6 px-4">
+    <div className="bg-blue-100 container mx-auto py-6 px-4">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Dashboard</h1>
         <Button
-          className="bg-black text-white border-white border-2 px-4 py-2 rounded-md hover:bg-white hover:text-black transition-colors duration-300"
+          className="bg-yellow-400 text-black border-2 border-black px-4 py-2 rounded-md hover:bg-green-600 hover:text-white transition-colors duration-300"
           onClick={() => setIsModalOpen(true)}
         >
           Create Workflow
@@ -116,8 +116,8 @@ const Dashboard = () => {
           onSubmit={handleCreateWorkflow}
         />
       </div>
-      <div className="relative w-full max-w-md mb-6">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+      <div className="bg-white relative w-1/3 max-w-md mb-6">
+        <Search className=" absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
         <Input
           type="text"
           placeholder="Search workflows..."
@@ -128,11 +128,11 @@ const Dashboard = () => {
       </div>
       {error && <p className="text-red-500">Error: {error.message}</p>}
       {isLoadingWorkflows ? (
-        <p>Loading workflows...</p>
+        <div>Loading workflows...</div>
       ) : filteredWorkflows.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredWorkflows.map((workflow) => (
-            <Card key={workflow.id}>
+            <Card key={workflow.id} className="bg-gray-200">
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-lg">{workflow.name}</CardTitle>
@@ -195,4 +195,5 @@ const Dashboard = () => {
     </div>
   );
 };
+
 export default Dashboard;

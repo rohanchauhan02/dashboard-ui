@@ -2,7 +2,7 @@ import { Link } from "wouter";
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-50 border-t border-gray-200 py-12">
+    <footer className="bg-gray-200 border-t border-gray-200 py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Top Section: Links and Categories */}
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-10">
