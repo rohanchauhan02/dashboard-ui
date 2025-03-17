@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import AppHeader from "./AppHeader";
-import Sidebar from "./Sidebar";
+// import Sidebar from "./Sidebar";
 import { useLocation } from "wouter";
 
 interface LayoutProps {

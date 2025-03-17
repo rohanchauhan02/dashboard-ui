@@ -8,11 +8,15 @@ import ExecutionHistory from "./pages/execution-history";
 import Layout from "./components/Layout";
 import CreateRule from "./pages/CreateRule";
 import AIWorkflowBuilder from "./pages/AIWorkflowBuilder";
+import Signup from "./pages/Signup";
+import SignIn from "./pages/Signin";
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
+      <Route path="/get-started" component={Signup} />
+      <Route path="/sign-in" component={SignIn} />
       <Route path="/workflows" component={Dashboard} />
       <Route path="/workflows/:id" component={WorkflowEditor} />
       <Route path="/create-rule" component={CreateRule} />
